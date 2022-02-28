@@ -1,9 +1,15 @@
 package Domain
 
+import org.joda.time.DateTime
+
 import java.util.UUID
 import java.util.UUID.randomUUID
 
-case class User(userId: UserId, userName: UserName, age: Age, weight: Weight)
+case class User(userId: UserId,
+                userName: UserName,
+                age: Age,
+                weight: Weight,
+                createdDate: DateTime)
 
 opaque type UserId = UUID
 
