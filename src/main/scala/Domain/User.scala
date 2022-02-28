@@ -8,8 +8,8 @@ import java.util.UUID.randomUUID
 case class User(userId: UserId,
                 userName: UserName,
                 age: Age,
-                weight: Weight,
-                createdDate: DateTime)
+                weight: UserWeight,
+                createdDate: LocalDate )
 
 opaque type UserId = UUID
 
