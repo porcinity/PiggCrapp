@@ -2,6 +2,9 @@ package Domain
 
 import java.util.UUID
 
+enum Sets:
+  case Regular(regularSet: RegularSet)
+
 case class RegularSet(regularSetId: RegularSetId,
                       weight: Weight,
                       reps: Reps,
