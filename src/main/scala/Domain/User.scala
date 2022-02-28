@@ -26,15 +26,15 @@ object UserName:
 opaque type Age = Int
 
 object Age:
-  def apply(value: Int): Either[String, Age] = value match
+  def apply(age: Int): Either[String, Age] = age match
     case TooOld() => Left("Age cannot be greater than 100.")
     case TooYoung() => Left("Age must be greater than 18.")
-    case _ => Right(value)
+    case _ => Right(age)
 
-opaque type Weight = Double
+opaque type UserWeight = Double
 
 object Weight:
-  def apply(value: Double): Either[String, Weight] = value match
+  def apply(value: Double): Either[String, UserWeight] = value match
     case TooHeavy() => Left("Weight must be less than 400lbs.")
     case TooLight() => Left("Weight cannot be less than 70lbs.")
     case _ => Right(value)
