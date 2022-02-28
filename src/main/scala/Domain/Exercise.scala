@@ -2,7 +2,10 @@ package Domain
 
 import java.util.UUID
 
-case class Exercise(exerciseId: ExerciseId, exerciseName: ExerciseName, workoutId: WorkoutId)
+case class Exercise(exerciseId: ExerciseId,
+                    exerciseName: ExerciseName,
+                    sets: List[Sets],
+                    workoutId: WorkoutId)
 
 opaque type ExerciseId = UUID
 
