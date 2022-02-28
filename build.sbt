@@ -8,5 +8,8 @@ lazy val root = project
 
     scalaVersion := scala3Version,
 
-    libraryDependencies += "com.github.sbt" % "junit-interface" % "0.13.3" % Test
+    libraryDependencies ++= Seq(
+      "com.github.sbt" % "junit-interface" % "0.13.3" % Test,
+      "com.github.nscala-time" %% "nscala-time" % "2.30.0"
+    )
   )
