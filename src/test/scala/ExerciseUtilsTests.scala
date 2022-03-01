@@ -1,10 +1,10 @@
 import Domain.*
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.EitherValues.convertEitherToValuable
+import org.scalatest.EitherValues
 
 import java.util.UUID
 
-class ExerciseUtilsTests extends AnyWordSpec:
+class ExerciseUtilsTests extends AnyWordSpec with EitherValues:
   "An ExerciseName" should {
     "not be created with invalid input" in {
       assert(ExerciseName("") == Left("Exercise name cannot be empty."))
