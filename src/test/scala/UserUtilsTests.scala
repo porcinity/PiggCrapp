@@ -44,33 +44,29 @@ class UserUtilsTests extends AnyWordSpec:
 
   "A User" should {
     "not be created with invalid input." in {
-      val id = UserId(UUID.randomUUID())
       val name = UserName("")
       val age = Age(10)
       val weight = UserWeight(500)
-      val date = LocalDate.now()
 
       val user = for
         n <- name
         a <- age
         w <- weight
-      yield User(id, n, a, w, date)
+      yield User(n, a, w)
 
       assert(user.isLeft)
     }
 
     "be created with valid input" in {
-      val id = UserId(UUID.randomUUID())
       val name = UserName("Porcinity")
       val age = Age(50)
       val weight = UserWeight(200)
-      val date = LocalDate.now()
 
       val user = for
         n <- name
         a <- age
         w <- weight
-      yield User(id, n, a, w, date)
+      yield User(n, a, w)
 
       assert(user.isRight)
 
