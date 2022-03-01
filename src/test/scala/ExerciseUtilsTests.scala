@@ -42,7 +42,7 @@ class ExerciseUtilsTests extends AnyWordSpec with EitherValues:
       assert(exercise.isRight)
     }
     "should add a valid set to list of sets" in {
-      val regularSetId = RegularSetId(UUID.randomUUID())
+      val regularSetId = RegularSetId(5)
       val weight = Weight(300)
       val reps = Reps(13)
       val exerciseName = ExerciseName("Squat")
@@ -66,7 +66,7 @@ class ExerciseUtilsTests extends AnyWordSpec with EitherValues:
       assert(result.value.sets.length == 1)
     }
     "should not add an invalid set to list of sets" in {
-      val regularSetId = RegularSetId(UUID.randomUUID())
+      val regularSetId = RegularSetId(5)
       val weight = Weight(0)
       val reps = Reps(-3)
       val exerciseName = ExerciseName("Squat")

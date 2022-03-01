@@ -37,10 +37,10 @@ case class ExtremeStretchSet(
                          time: Time
                          )
 
-opaque type RegularSetId = UUID
+opaque type RegularSetId = Int
 
 object RegularSetId:
-  def apply(id: UUID): RegularSetId = id
+  def apply(id: Int): RegularSetId = id
 
 opaque type RestPauseSetId = Int
 
