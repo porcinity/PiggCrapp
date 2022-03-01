@@ -88,13 +88,13 @@ object TooFewReps:
   def unapply(x: Int): Boolean = x < 0
 
 object OkReps:
-  def unapply(x: Int): Boolean = 100 > x && 0 < x
+  def unapply(x: Int): Boolean = 100 >= x && 0 <= x
 
 object TooHeavy:
-  def unapply(x: Double): Boolean = x >= 1000
+  def unapply(x: Double): Boolean = x > 1000
 
 object TooLight:
-  def unapply(x: Double): Boolean = x <= 0
+  def unapply(x: Double): Boolean = x < 0
 
 object OkWeight:
-  def unapply(x: Double): Boolean = x <= 1000 && x >= 0
+  def unapply(x: Double): Boolean = 1000 >= x && 0 <= x
