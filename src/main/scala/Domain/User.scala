@@ -17,9 +17,9 @@ opaque type UserName = String
 
 object UserName:
   def apply(value: String): Either[String, UserName] = value match
-    case TooLong() => Left("Name cannot be over 100 characters.")
-    case TooShort() => Left("Name cannot be fewer than 5 characters.")
-    case NumbersOrChars() => Left("Name cannot contain numbers or special characters.")
+    case TooLongName() => Left("Name cannot be over 100 characters.")
+    case TooShortName() => Left("Name cannot be fewer than 5 characters.")
+    case NumbersOrCharsName() => Left("Name cannot contain numbers or special characters.")
     case Empty() => Left("Name cannot be empty.")
     case _ => Right(value)
 
@@ -40,13 +40,13 @@ object Weight:
     case _ => Right(value)
 
 // Name extractors
-object TooShort:
+object TooShortName:
   def unapply(x: String): Boolean = x.length < 5 && x.nonEmpty
 
-object TooLong:
+object TooLongName:
   def unapply(x: String): Boolean = x.length > 100
 
-object NumbersOrChars:
+object NumbersOrCharsName:
   def unapply(x: String): Boolean = !x.matches("^[a-zA-Z]+$")
 
 object Empty:
