@@ -7,6 +7,13 @@ case class Exercise(exerciseId: ExerciseId,
                     sets: List[Sets],
                     workoutId: WorkoutId)
 
+object Exercise:
+  def apply(exerciseName: ExerciseName, workoutId: WorkoutId): Exercise =
+    val id = ExerciseId(UUID.randomUUID())
+    val sets = List[Sets]()
+
+    new Exercise(id, exerciseName, sets, workoutId)
+
 opaque type ExerciseId = UUID
 
 object ExerciseId:
