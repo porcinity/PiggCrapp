@@ -10,6 +10,14 @@ case class Workout(workoutId: WorkoutId,
                    exercises: List[Exercise],
                    owner: UserId)
 
+object Workout:
+  def apply(variation: WorkoutVariation, userId: UserId): Workout =
+    val id = WorkoutId(randomUUID())
+    val date = LocalDate.now()
+    val exercises = List[Exercise]()
+
+    new Workout(id, date, variation, exercises, userId)
+
 opaque type WorkoutId = UUID
 
 object WorkoutId:
