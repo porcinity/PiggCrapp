@@ -23,6 +23,21 @@ case class RestPauseSet(
                        exercise: ExerciseId
                        )
 
+object RestPauseSet:
+  def apply(
+             restPauseSetId: RestPauseSetId,
+             range: RestPauseRange,
+             weight: Weight,
+             exerciseId: ExerciseId
+           ) =
+    new RestPauseSet(restPauseSetId, range, weight, List[Reps](), exerciseId)
+
+  extension (rpSet: RestPauseSet)
+    def addReps(reps: Reps): Either[String, RestPauseSet] = rpSet.restPauseSets match {
+      case x if x.length == 3 => Left("All Rest Pause sets are completed.")
+      case _ => Right(rpSet.copy(restPauseSets = rpSet.restPauseSets :+ reps))
+    }
+
 case class WidowMakerSet(
                         widowMakerSetId: WidowMakerSetId,
                         weight: Weight,
