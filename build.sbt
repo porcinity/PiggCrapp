@@ -10,6 +10,7 @@ lazy val root = project
 
     libraryDependencies ++= Seq(
       "com.github.sbt" % "junit-interface" % "0.13.3" % Test,
-      "com.github.nscala-time" %% "nscala-time" % "2.30.0"
+      "org.scalactic" %% "scalactic" % "3.2.11",
+      "org.scalatest" %% "scalatest" % "3.2.11" % "test"
     )
   )
