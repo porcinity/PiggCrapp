@@ -4,7 +4,7 @@ import org.scalatest.EitherValues
 
 import java.util.UUID
 
-class SetsUtilsTests extends AnyWordSpec with EitherValues:
+class SetsUtilsTests extends AnyWordSpec with EitherValues :
   "A Weight" should {
     "not be created with invalid input" in {
       assert(Weight(1500) == Left("Weight must by less than or equal to 1,000 lbs."))
@@ -53,5 +53,61 @@ class SetsUtilsTests extends AnyWordSpec with EitherValues:
       yield RegularSet(setId, w, r, exerciseId)
 
       assert(result.isRight)
+    }
+    "A RestPause set" should {
+      "be created with valid input" in {
+        val setId = RestPauseSetId(1)
+        val range = RestPauseRange.Base
+        val weight = Weight(300)
+        val exerciseId = ExerciseId(UUID.randomUUID())
+
+        val result = for
+          w <- weight
+        yield RestPauseSet(setId, range, w, exerciseId)
+
+        assert(result.isRight)
+      }
+      "be able to add valid valid Rest Pause sets" in {
+        val setId = RestPauseSetId(1)
+        val range = RestPauseRange.Base
+        val weight = Weight(300)
+        val exerciseId = ExerciseId(UUID.randomUUID())
+        val reps = Reps(15)
+
+        val rpSet = for
+          w <- weight
+        yield RestPauseSet(setId, range, w, exerciseId)
+
+        val result = for
+          r <- reps
+          s <- rpSet
+        yield s.addReps(r).value
+
+        assert(result.value.restPauseSets.length == 1)
+      }
+      "not be able to add more than 3 valid RestPause sets" in {
+        val setId = RestPauseSetId(1)
+        val range = RestPauseRange.Base
+        val weight = Weight(300)
+        val exerciseId = ExerciseId(UUID.randomUUID())
+        val repsOne = Reps(15)
+        val repsTwo = Reps(7)
+        val repsThree = Reps(3)
+        val repsFour = Reps(1)
+
+        val rpSet = for
+          w <- weight
+        yield RestPauseSet(setId, range, w, exerciseId)
+
+        val result = for
+          r1 <- repsOne
+          r2 <- repsTwo
+          r3 <- repsThree
+          r4 <- repsFour
+          s <- rpSet
+        yield s.addReps(r1).value.addReps(r2).value.addReps(r3).value.addReps(r4).left.value
+
+        assert(result.value === "All Rest Pause sets are completed.")
+      }
     }
   }
