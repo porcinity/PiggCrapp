@@ -28,10 +28,10 @@ opaque type ExerciseName = String
 
 object ExerciseName:
   def apply(name: String): Either[String, ExerciseName] = name match
-    case TooLong() => Left("Exercise name cannot be over 100 characters.")
+    case Empty() => Left("Exercise name cannot be empty.")
+    case TooLong() => Left("Exercise name cannot be over 50 characters.")
     case TooShort() => Left("Exercise name cannot be fewer than 5 characters.")
     case NumbersOrChars() => Left("Exercise name cannot contain numbers or special characters.")
-    case Empty() => Left("Exercise name cannot be empty.")
     case _ => Right(name)
 
 object TooShort:
