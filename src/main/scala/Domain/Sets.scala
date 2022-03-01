@@ -6,7 +6,7 @@ enum Sets:
   case Regular(regularSet: RegularSet)
   case RestPause(restPauseSet: RestPauseSet)
   case WidowMaker(widowMakerSet: WidowMakerSet)
-  case ExtremeStretch(extremeStretch: ExtremeStretch)
+  case ExtremeStretch(extremeStretch: ExtremeStretchSet)
 
 case class RegularSet(
                        regularSetId: RegularSetId,
@@ -31,7 +31,7 @@ case class WidowMakerSet(
                         completionTime: Time
                         )
 
-case class ExtremeStretch(
+case class ExtremeStretchSet(
                          extremeStretchId: ExtremeStretchId,
                          weight: Weight,
                          time: Time
@@ -56,7 +56,7 @@ opaque type Time = Double
 
 opaque type ExtremeStretchId = Int
 
-object ExtremeSetId:
+object ExtremeStretchId:
   def apply(id: Int): ExtremeStretchId = id
 
 object Time:
