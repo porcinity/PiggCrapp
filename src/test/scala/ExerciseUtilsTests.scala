@@ -1,5 +1,5 @@
 import Domain.*
-import org.scalatest.wordspec.*
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.EitherValues.convertEitherToValuable
 
 import java.util.UUID
@@ -11,8 +11,9 @@ class ExerciseUtilsTests extends AnyWordSpec:
       assert(ExerciseName("ASuperDuperVeryExtraLongExerciseNameThatShouldNotBeAccepted") == Left("Exercise name cannot be over 50 characters."))
       assert(ExerciseName("arms") == Left("Exercise name cannot be fewer than 5 characters."))
       assert(ExerciseName("B@dExerc!seName") == Left("Exercise name cannot contain numbers or special characters."))
+      assert(ExerciseName("BadEx3rciseName") == Left("Exercise name cannot contain numbers or special characters."))
     }
-    "should be created with valid input" in {
+    "be created with valid input" in {
       assert(ExerciseName("Squat").isRight)
       assert(ExerciseName("Bench Press").isRight)
       assert(ExerciseName("Deadlift").isRight)
