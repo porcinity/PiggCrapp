@@ -43,10 +43,10 @@ object UserWeight:
 
 // Name extractors
 object TooShortName:
-  def unapply(x: String): Boolean = x.length < 5 && x.nonEmpty
+  def unapply(x: String): Boolean = x.length < 3 && x.nonEmpty
 
 object TooLongName:
-  def unapply(x: String): Boolean = x.length > 100
+  def unapply(x: String): Boolean = x.length > 30
 
 object NumbersOrCharsName:
   def unapply(x: String): Boolean = !x.matches("^[a-zA-Z]+$")
