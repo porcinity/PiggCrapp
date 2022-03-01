@@ -19,10 +19,10 @@ opaque type UserName = String
 
 object UserName:
   def apply(value: String): Either[String, UserName] = value match
-    case TooLongName() => Left("Name cannot be over 100 characters.")
-    case TooShortName() => Left("Name cannot be fewer than 5 characters.")
-    case NumbersOrCharsName() => Left("Name cannot contain numbers or special characters.")
     case Empty() => Left("Name cannot be empty.")
+    case TooLongName() => Left("Name cannot be over 30 characters.")
+    case TooShortName() => Left("Name cannot be fewer than 3 characters.")
+    case NumbersOrCharsName() => Left("Name cannot contain numbers or special characters.")
     case _ => Right(value)
 
 opaque type Age = Int
