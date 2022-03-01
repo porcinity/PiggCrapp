@@ -10,6 +10,12 @@ case class User(userId: UserId,
                 weight: UserWeight,
                 createdDate: LocalDate )
 
+object User:
+  def apply(name: UserName, age: Age, weight: UserWeight): User =
+    val id = UserId(UUID.randomUUID())
+    val date = LocalDate.now()
+    new User(id, name, age, weight, date)
+
 opaque type UserId = UUID
 
 object UserId:
