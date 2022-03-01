@@ -12,6 +12,9 @@ case class User(userId: UserId,
 
 opaque type UserId = UUID
 
+object UserId:
+  def apply(id: UUID): UserId = id
+
 opaque type UserName = String
 
 object UserName:
