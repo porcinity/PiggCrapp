@@ -14,6 +14,11 @@ object Exercise:
 
     new Exercise(id, exerciseName, sets, workoutId)
 
+  extension (exercise: Exercise)
+    def addSet(set: Sets): Exercise =
+      exercise.copy(sets = exercise.sets :+ set)
+
+
 opaque type ExerciseId = UUID
 
 object ExerciseId:
