@@ -4,16 +4,66 @@ import java.util.UUID
 
 enum Sets:
   case Regular(regularSet: RegularSet)
+  case RestPause(restPauseSet: RestPauseSet)
+  case WidowMaker(widowMakerSet: WidowMakerSet)
+  case ExtremeStretch(extremeStretch: ExtremeStretch)
 
-case class RegularSet(regularSetId: RegularSetId,
-                      weight: Weight,
-                      reps: Reps,
-                      exerciseId: ExerciseId)
+case class RegularSet(
+                       regularSetId: RegularSetId,
+                       weight: Weight,
+                       reps: Reps,
+                       exercise: ExerciseId
+                     )
+
+case class RestPauseSet(
+                       restPauseSetId: RestPauseSetId,
+                       range: RestPauseRange,
+                       weight: Weight,
+                       restPauseSets: List[Reps],
+                       exercise: ExerciseId
+                       )
+
+case class WidowMakerSet(
+                        widowMakerSetId: WidowMakerSetId,
+                        weight: Weight,
+                        targetReps: Reps,
+                        actualReps: Reps,
+                        completionTime: Time
+                        )
+
+case class ExtremeStretch(
+                         extremeStretchId: ExtremeStretchId,
+                         weight: Weight,
+                         time: Time
+                         )
 
 opaque type RegularSetId = UUID
 
 object RegularSetId:
   def apply(id: UUID): RegularSetId = id
+
+opaque type RestPauseSetId = Int
+
+object RestPauseSetId:
+  def apply(id: Int): RestPauseSetId = id
+
+opaque type WidowMakerSetId = Int
+
+object WidowMakerSetId:
+  def apply(id: Int): WidowMakerSetId = id
+
+opaque type Time = Double
+
+opaque type ExtremeStretchId = Int
+
+object ExtremeSetId:
+  def apply(id: Int): ExtremeStretchId = id
+
+object Time:
+  def apply(time: Double): Time = time
+
+enum RestPauseRange:
+  case Base, Medium, High
 
 opaque type Weight = Double
 
