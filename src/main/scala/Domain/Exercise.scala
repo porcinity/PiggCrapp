@@ -38,10 +38,10 @@ object TooShort:
   def unapply(x: String): Boolean = x.length < 5 && x.nonEmpty
 
 object TooLong:
-  def unapply(x: String): Boolean = x.length > 100
+  def unapply(x: String): Boolean = x.length > 50
 
 object NumbersOrChars:
-  def unapply(x: String): Boolean = !x.matches("^[a-zA-Z]+$")
+  def unapply(x: String): Boolean = !x.matches("^[a-z A-Z]+$")
 
 object Empty:
   def unapply(x: String): Boolean = x.isEmpty
