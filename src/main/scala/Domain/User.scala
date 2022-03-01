@@ -3,7 +3,6 @@ package Domain
 import java.time.*
 
 import java.util.UUID
-import java.util.UUID.randomUUID
 
 case class User(userId: UserId,
                 userName: UserName,
@@ -48,9 +47,6 @@ object TooLongName:
 
 object NumbersOrCharsName:
   def unapply(x: String): Boolean = !x.matches("^[a-zA-Z]+$")
-
-object Empty:
-  def unapply(x: String): Boolean = x.isEmpty
 
 // Age extractors
 object TooOld:
