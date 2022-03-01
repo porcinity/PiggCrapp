@@ -1,11 +1,11 @@
 package Domain
 
+import java.time.LocalDate
 import java.util.UUID
 import java.util.UUID.randomUUID
-import com.github.nscala_time.time.Imports._
 
 case class Workout(workoutId: WorkoutId,
-                   date: DateTime,
+                   date: LocalDate,
                    variation: WorkoutVariation,
                    exercises: List[Exercise],
                    owner: UserId)
