@@ -32,11 +32,11 @@ object Age:
 
 opaque type UserWeight = Double
 
-object Weight:
-  def apply(value: Double): Either[String, UserWeight] = value match
-    case TooHeavy() => Left("Weight must be less than 400lbs.")
-    case TooLight() => Left("Weight cannot be less than 70lbs.")
-    case _ => Right(value)
+object UserWeight:
+  def apply(weight: Double): Either[String, UserWeight] = weight match
+    case TooHeavyUser() => Left("Weight must be less than 400lbs.")
+    case TooLightUser() => Left("Weight cannot be less than 70lbs.")
+    case _ => Right(weight)
 
 // Name extractors
 object TooShortName:
@@ -56,8 +56,8 @@ object TooYoung:
   def unapply(x: Int): Boolean = x < 18
 
 // Weight extractors
-object TooHeavy:
+object TooHeavyUser:
   def unapply(x: Double): Boolean = x > 400
 
-object TooLight:
+object TooLightUser:
   def unapply(x: Double): Boolean = x < 70
