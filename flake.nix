@@ -8,7 +8,7 @@
     };
 
     nixpkgs = {
-      url = "nixpkgs/nixos-21.11";
+      url = "nixpkgs/nixos-unstable";
     };
 
   };
@@ -20,7 +20,7 @@
       in {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
-            jdk11
+            jdk
             sbt
           ];
         };

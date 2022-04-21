@@ -8,7 +8,13 @@
 /dataSources.local.xml
 
 # scala 3
+.bsp
 .tasty
+.idea
+.metals
+.vscode
+project
+target
 
 # sbt
 project/project/

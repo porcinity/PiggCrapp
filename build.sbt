@@ -5,9 +5,8 @@ lazy val root = project
   .settings(
     name := "PiggCrapp",
     version := "0.1.0-SNAPSHOT",
-
+    semanticdbEnabled := true,
     scalaVersion := scala3Version,
-
     libraryDependencies ++= Seq(
       "com.github.sbt" % "junit-interface" % "0.13.3" % Test,
       "org.scalactic" %% "scalactic" % "3.2.11",
