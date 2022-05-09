@@ -22,6 +22,7 @@
           buildInputs = with pkgs; [
             jdk
             sbt
+            coursier
           ];
         };
       });
