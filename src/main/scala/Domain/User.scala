@@ -7,16 +7,20 @@ import java.util.UUID
 import eu.timepit.refined.types.string.NonEmptyFiniteString
 import eu.timepit.refined.cats.CatsRefinedTypeOpsSyntax
 import eu.timepit.refined.types.numeric.NonNegInt
+import Domain.Workout.Workout
+import io.circe.refined._
+import io.circe.Codec
 
 object User {
 
-  case class User(
+  final case class User(
       userId: UserId,
       userName: UserName,
       age: Age,
+      workouts: List[Workout],
       weight: UserWeight,
       createdDate: CreatedDate
-  )
+  ) derives Codec.AsObject
 
   type UserId = NonEmptyFiniteString[30]
 
