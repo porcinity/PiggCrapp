@@ -1,18 +1,17 @@
 package Domain
 
-import eu.timepit.refined.api._
-import java.time.*
-
-import java.util.UUID
-import eu.timepit.refined.types.string.NonEmptyFiniteString
-import eu.timepit.refined.cats.CatsRefinedTypeOpsSyntax
-import eu.timepit.refined.types.numeric.NonNegInt
 import Domain.Workout.Workout
-import io.circe.refined._
-import io.circe.Codec
 import cats.data.*
 import cats.syntax.all.*
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils
+import eu.timepit.refined.api._
+import eu.timepit.refined.cats.CatsRefinedTypeOpsSyntax
+import eu.timepit.refined.types.numeric.NonNegInt
+import eu.timepit.refined.types.string.NonEmptyFiniteString
+import io.circe.Codec
+import io.circe.refined._
+
+import java.time.*
 
 object User {
 
