@@ -1,47 +1,36 @@
 package Domain
 
-import java.util.UUID
+import cats.data.*
+import cats.syntax.all.*
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils
+import eu.timepit.refined.api._
+import eu.timepit.refined.cats.CatsRefinedTypeOpsSyntax
+import eu.timepit.refined.types.numeric.NonNegInt
+import eu.timepit.refined.types.string.NonEmptyFiniteString
+import io.circe.Codec
+import io.circe.refined._
 
-case class Exercise(exerciseId: ExerciseId,
-                    exerciseName: ExerciseName,
-                    sets: List[Sets],
-                    workoutId: WorkoutId)
+import java.time.*
 
-object Exercise:
-  def apply(exerciseName: ExerciseName, workoutId: WorkoutId): Exercise =
-    val id = ExerciseId(UUID.randomUUID())
-    val sets = List[Sets]()
+object Exercise {
 
-    new Exercise(id, exerciseName, sets, workoutId)
+  case class Exercise(
+      exerciseId: ExerciseId,
+      exerciseName: ExerciseName,
+      sets: List[Sets],
+      workoutId: Workout.WorkoutId
+  )
 
   extension (exercise: Exercise)
     def addSet(set: Sets): Exercise =
       exercise.copy(sets = exercise.sets :+ set)
 
+  type ExerciseId = NonEmptyFiniteString[21]
 
-opaque type ExerciseId = UUID
+  object ExerciseId
+      extends RefinedTypeOps[ExerciseId, String]
+      with CatsRefinedTypeOpsSyntax
 
-object ExerciseId:
-  def apply(id: UUID): ExerciseId= id
+  type ExerciseName = NonEmptyFiniteString[30]
 
-opaque type ExerciseName = String
-
-object ExerciseName:
-  def apply(name: String): Either[String, ExerciseName] = name match
-    case Empty() => Left("Exercise name cannot be empty.")
-    case TooLong() => Left("Exercise name cannot be over 50 characters.")
-    case TooShort() => Left("Exercise name cannot be fewer than 5 characters.")
-    case NumbersOrChars() => Left("Exercise name cannot contain numbers or special characters.")
-    case _ => Right(name)
-
-object TooShort:
-  def unapply(x: String): Boolean = x.length < 5 && x.nonEmpty
-
-object TooLong:
-  def unapply(x: String): Boolean = x.length > 50
-
-object NumbersOrChars:
-  def unapply(x: String): Boolean = !x.matches("^[a-z A-Z]+$")
-
-object Empty:
-  def unapply(x: String): Boolean = x.isEmpty
+}
