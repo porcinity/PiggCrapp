@@ -40,9 +40,12 @@ object Workout {
     def fromString(
         variation: String
     ): Either[NonEmptyChain[String], WorkoutVariation] = variation match {
-      case "UpperA" => Right(UpperA)
-      case "UpperB" => Right(UpperB)
-      case "UpperC" => Right(UpperC)
+      case "UpperA" => UpperA.asRight
+      case "UpperB" => UpperB.asRight
+      case "UpperC" => UpperC.asRight
+      case "LowerA" => LowerA.asRight
+      case "LowerB" => LowerB.asRight
+      case "LowerC" => LowerC.asRight
       case _        => "Invalid variation".leftNec
     }
 
