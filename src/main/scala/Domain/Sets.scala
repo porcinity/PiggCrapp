@@ -1,114 +1,112 @@
 package Domain
 
-import java.util.UUID
+import cats.data.*
+import cats.syntax.all.*
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils
+import eu.timepit.refined.api._
+import eu.timepit.refined.cats.CatsRefinedTypeOpsSyntax
+import eu.timepit.refined.types.numeric.NonNegInt
+import eu.timepit.refined.types.string.NonEmptyFiniteString
+import io.circe.Codec
+import io.circe.refined._
 
-enum Sets:
-  case Regular(regularSet: RegularSet)
-  case RestPause(restPauseSet: RestPauseSet)
-  case WidowMaker(widowMakerSet: WidowMakerSet)
-  case ExtremeStretch(extremeStretch: ExtremeStretchSet)
+import java.time.*
+import eu.timepit.refined.types.numeric.NonNegDouble
 
-case class RegularSet(
-                       regularSetId: RegularSetId,
-                       weight: Weight,
-                       reps: Reps,
-                       exercise: ExerciseId
-                     )
+object Sets {
 
-case class RestPauseSet(
-                       restPauseSetId: RestPauseSetId,
-                       range: RestPauseRange,
-                       weight: Weight,
-                       restPauseSets: List[Reps],
-                       exercise: ExerciseId
-                       )
+  enum Sets:
+    case Regular(regularSet: RegularSet)
+    case RestPause(restPauseSet: RestPauseSet)
+    case WidowMaker(widowMakerSet: WidowMakerSet)
+    case ExtremeStretch(extremeStretch: ExtremeStretchSet)
 
-object RestPauseSet:
-  def apply(
-             restPauseSetId: RestPauseSetId,
-             range: RestPauseRange,
-             weight: Weight,
-             exerciseId: ExerciseId
-           ) =
-    new RestPauseSet(restPauseSetId, range, weight, List[Reps](), exerciseId)
+  case class RegularSet(
+      regularSetId: RegularSetId,
+      weight: Weight,
+      reps: Reps,
+      exercise: Exercise.ExerciseId
+  )
 
-  extension (rpSet: RestPauseSet)
-    def addReps(reps: Reps): Either[String, RestPauseSet] = rpSet.restPauseSets match
-      case x if x.length == 3 => Left("All Rest Pause sets are completed.")
-      case _ => Right(rpSet.copy(restPauseSets = rpSet.restPauseSets :+ reps))
+  case class RestPauseSet(
+      restPauseSetId: RestPauseSetId,
+      range: RestPauseRange,
+      weight: Weight,
+      restPauseSets: List[Reps],
+      exercise: Exercise.ExerciseId
+  )
 
-case class WidowMakerSet(
-                        widowMakerSetId: WidowMakerSetId,
-                        weight: Weight,
-                        targetReps: Reps,
-                        actualReps: Reps,
-                        completionTime: Time
-                        )
+  object RestPauseSet {
+    def apply(
+        restPauseSetId: RestPauseSetId,
+        range: RestPauseRange,
+        weight: Weight,
+        exerciseId: Exercise.ExerciseId
+    ) =
+      new RestPauseSet(restPauseSetId, range, weight, List[Reps](), exerciseId)
 
-case class ExtremeStretchSet(
-                         extremeStretchId: ExtremeStretchId,
-                         weight: Weight,
-                         time: Time
-                         )
+    extension (rpSet: RestPauseSet)
+      def addReps(reps: Reps): Either[String, RestPauseSet] =
+        rpSet.restPauseSets match
+          case x if x.length == 3 => Left("All Rest Pause sets are completed.")
+          case _ =>
+            Right(rpSet.copy(restPauseSets = rpSet.restPauseSets :+ reps))
+  }
 
-opaque type RegularSetId = Int
+  case class WidowMakerSet(
+      widowMakerSetId: WidowMakerSetId,
+      weight: Weight,
+      targetReps: Reps,
+      actualReps: Reps,
+      completionTime: Time
+  )
 
-object RegularSetId:
-  def apply(id: Int): RegularSetId = id
+  case class ExtremeStretchSet(
+      extremeStretchId: ExtremeStretchId,
+      weight: Weight,
+      time: Time
+  )
 
-opaque type RestPauseSetId = Int
+  type RegularSetId = NonEmptyFiniteString[21]
 
-object RestPauseSetId:
-  def apply(id: Int): RestPauseSetId = id
+  object RegularSetId
+      extends RefinedTypeOps[RegularSetId, String]
+      with CatsRefinedTypeOpsSyntax
 
-opaque type WidowMakerSetId = Int
+  type RestPauseSetId = NonEmptyFiniteString[21]
 
-object WidowMakerSetId:
-  def apply(id: Int): WidowMakerSetId = id
+  object RestPauseSetId
+      extends RefinedTypeOps[RestPauseSetId, String]
+      with CatsRefinedTypeOpsSyntax
 
-opaque type Time = Double
+  type WidowMakerSetId = NonEmptyFiniteString[21]
 
-opaque type ExtremeStretchId = Int
+  object WidowMakerSetId
+      extends RefinedTypeOps[WidowMakerSetId, String]
+      with CatsRefinedTypeOpsSyntax
 
-object ExtremeStretchId:
-  def apply(id: Int): ExtremeStretchId = id
+  opaque type Time = Double
 
-object Time:
-  def apply(time: Double): Time = time
+  type ExtremeStretchId = NonEmptyFiniteString[21]
 
-enum RestPauseRange:
-  case Base, Medium, High
+  object ExtremeStretchId
+      extends RefinedTypeOps[ExtremeStretchId, String]
+      with CatsRefinedTypeOpsSyntax
 
-opaque type Weight = Double
+  object Time:
+    def apply(time: Double): Time = time
 
-object Weight:
-  def apply(weight: Double): Either[String, Weight] = weight match
-    case TooHeavy() => Left("Weight must by less than or equal to 1,000 lbs.")
-    case TooLight() => Left("Weight must be greater than or equal to 0 lbs.")
-    case OkWeight() => Right(weight)
+  enum RestPauseRange:
+    case Base, Medium, High
 
-opaque type Reps = Int
+  type Weight = NonNegDouble
 
-object Reps:
-  def apply(reps: Int): Either[String, Reps] = reps match
-    case TooManyReps() => Left("Reps must be fewer than 100.")
-    case TooFewReps() => Left("Rest must be greater than or equal to 0.")
-    case OkReps() => Right(reps)
+  object Weight
+      extends RefinedTypeOps[Weight, Double]
+      with CatsRefinedTypeOpsSyntax
 
-object TooManyReps:
-  def unapply(x: Int): Boolean = x > 100
+  type Reps = NonNegInt
 
-object TooFewReps:
-  def unapply(x: Int): Boolean = x < 0
+  object Reps extends RefinedTypeOps[Reps, Int] with CatsRefinedTypeOpsSyntax
 
-object OkReps:
-  def unapply(x: Int): Boolean = 100 >= x && 0 <= x
-
-object TooHeavy:
-  def unapply(x: Double): Boolean = x > 1000
-
-object TooLight:
-  def unapply(x: Double): Boolean = x < 0
-
-object OkWeight:
-  def unapply(x: Double): Boolean = 1000 >= x && 0 <= x
+}
