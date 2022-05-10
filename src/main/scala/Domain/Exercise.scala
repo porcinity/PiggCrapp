@@ -11,19 +11,20 @@ import io.circe.Codec
 import io.circe.refined._
 
 import java.time.*
+import Domain.Workout.WorkoutId
 
 object Exercise {
 
   case class Exercise(
       exerciseId: ExerciseId,
       exerciseName: ExerciseName,
-      sets: List[Sets],
+      // sets: List[Sets],
       workoutId: Workout.WorkoutId
   )
 
-  extension (exercise: Exercise)
-    def addSet(set: Sets): Exercise =
-      exercise.copy(sets = exercise.sets :+ set)
+  // extension (exercise: Exercise)
+  //   def addSet(set: Sets): Exercise =
+  //     exercise.copy(sets = exercise.sets :+ set)
 
   type ExerciseId = NonEmptyFiniteString[21]
 
@@ -32,5 +33,30 @@ object Exercise {
       with CatsRefinedTypeOpsSyntax
 
   type ExerciseName = NonEmptyFiniteString[30]
+
+  object ExerciseName
+      extends RefinedTypeOps[ExerciseName, String]
+      with CatsRefinedTypeOpsSyntax
+
+  final case class ExerciseDto(name: String)
+
+  object ExerciseDto {
+
+    def toDomain(
+        dto: ExerciseDto,
+        workoutId: String
+    ): Either[NonEmptyChain[String], Exercise] = {
+      val id = NanoIdUtils.randomNanoId
+
+      (
+        ExerciseId.from(id).toEitherNec,
+        ExerciseName
+          .from(dto.name)
+          .leftMap(_ => "Exercise name must be 30 characters or fewer.")
+          .toEitherNec,
+        WorkoutId.from(workoutId).toEitherNec
+      ).parMapN(Exercise.apply)
+    }
+  }
 
 }
