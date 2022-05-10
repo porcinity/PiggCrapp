@@ -5,35 +5,82 @@ import java.util.UUID
 import java.util.UUID.randomUUID
 import eu.timepit.refined.types.string.NonEmptyFiniteString
 import io.circe.Codec
+import io.circe.refined.*
 import eu.timepit.refined.api._
 import eu.timepit.refined.cats.CatsRefinedTypeOpsSyntax
-import org.latestbit.circe.adt.codec.JsonTaggedAdt
+import org.latestbit.circe.adt.codec.JsonTaggedAdt.{PureEncoder, PureDecoder}
+import eu.timepit.refined.types.string.NonEmptyString
+import cats.data.*
+import cats.syntax.all.*
+import Domain.User.UserId
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 
 object Workout {
 
-  case class Workout(
+  final case class Workout(
       workoutId: WorkoutId,
-      date: LocalDate,
+      date: WorkoutDate,
       variation: WorkoutVariation,
-      exercises: List[Exercise],
-      owner: UserId
+      // exercises: List[Exercise],
+      user: User.UserId
   ) derives Codec.AsObject
 
-  type WorkoutId = NonEmptyFiniteString[30]
+  type WorkoutId = NonEmptyString
 
   object WorkoutId
       extends RefinedTypeOps[WorkoutId, String]
       with CatsRefinedTypeOpsSyntax
 
-  enum WorkoutVariation
-      derives JsonTaggedAdt.PureEncoder,
-        JsonTaggedAdt.PureDecoder {
+  enum WorkoutVariation derives PureEncoder, PureDecoder {
     case UpperA, UpperB, UpperC, LowerA, LowerB, LowerC
   }
 
-  type UserId = NonEmptyFiniteString[20]
+  object WorkoutVariation {
 
-  object UserId
-      extends RefinedTypeOps[UserId, String]
+    def fromString(
+        variation: String
+    ): Either[NonEmptyChain[String], WorkoutVariation] = variation match {
+      case "UpperA" => Right(UpperA)
+      case "UpperB" => Right(UpperB)
+      case "UpperC" => Right(UpperC)
+      case _        => "Invalid variation".leftNec
+    }
+
+  }
+
+  type WorkoutUser = NonEmptyFiniteString[20]
+
+  object WorkoutUser
+      extends RefinedTypeOps[WorkoutUser, String]
       with CatsRefinedTypeOpsSyntax
+
+  type WorkoutDate = LocalDate
+
+  object WorkoutDate {
+
+    def apply(date: LocalDate): Either[NonEmptyChain[String], WorkoutDate] =
+      Right(date)
+
+  }
+
+  final case class WorkoutDto(date: LocalDate, variation: String)
+
+  object WorkoutDto {
+
+    def toDomain(
+        dto: WorkoutDto,
+        userId: String
+    ): Either[NonEmptyChain[String], Workout] = {
+      val id = NanoIdUtils.randomNanoId
+
+      (
+        WorkoutId.from(id).toEitherNec,
+        WorkoutDate(dto.date),
+        WorkoutVariation.fromString(dto.variation),
+        UserId.from(userId).toEitherNec
+      ).parMapN(Workout.apply)
+    }
+
+  }
+
 }
