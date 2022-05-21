@@ -37,6 +37,7 @@ object Sets {
   )
 
   object RestPauseSet {
+
     def apply(
         restPauseSetId: RestPauseSetId,
         range: RestPauseRange,
@@ -45,12 +46,14 @@ object Sets {
     ) =
       new RestPauseSet(restPauseSetId, range, weight, List[Reps](), exerciseId)
 
-    extension (rpSet: RestPauseSet)
+    extension (rpSet: RestPauseSet) {
       def addReps(reps: Reps): Either[String, RestPauseSet] =
-        rpSet.restPauseSets match
+        rpSet.restPauseSets match {
           case x if x.length == 3 => Left("All Rest Pause sets are completed.")
           case _ =>
             Right(rpSet.copy(restPauseSets = rpSet.restPauseSets :+ reps))
+        }
+    }
   }
 
   case class WidowMakerSet(
