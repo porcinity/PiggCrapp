@@ -1,6 +1,6 @@
-package Domain
+package io.porcinity.piggcrapp.Domain
 
-import Domain.Workout.Workout
+import Workout.Workout
 import cats.data.*
 import cats.syntax.all.*
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils

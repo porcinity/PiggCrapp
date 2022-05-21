@@ -1,6 +1,6 @@
-package Persistence
+package io.porcinity.piggcrapp.Persistence
 
-import Domain.User.*
+import io.porcinity.piggcrapp.Domain.User.User
 
 trait Users[F[_]] {
   def findAllUsers: F[List[User]]

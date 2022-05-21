@@ -1,4 +1,4 @@
-package Domain
+package io.porcinity.piggcrapp.Domain
 
 import cats.data.*
 import cats.syntax.all.*

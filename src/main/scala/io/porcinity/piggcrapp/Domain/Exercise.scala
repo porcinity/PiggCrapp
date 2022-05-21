@@ -1,4 +1,4 @@
-package Domain
+package io.porcinity.piggcrapp.Domain
 
 import cats.data.*
 import cats.syntax.all.*
@@ -11,7 +11,7 @@ import io.circe.Codec
 import io.circe.refined._
 
 import java.time.*
-import Domain.Workout.WorkoutId
+import Workout.WorkoutId
 
 object Exercise {
 

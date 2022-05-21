@@ -1,4 +1,4 @@
-package Domain
+package io.porcinity.piggcrapp.Domain
 
 import java.time.LocalDate
 import java.util.UUID
@@ -12,7 +12,7 @@ import org.latestbit.circe.adt.codec.JsonTaggedAdt.{PureEncoder, PureDecoder}
 import eu.timepit.refined.types.string.NonEmptyString
 import cats.data.*
 import cats.syntax.all.*
-import Domain.User.UserId
+import User.UserId
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 
 object Workout {
