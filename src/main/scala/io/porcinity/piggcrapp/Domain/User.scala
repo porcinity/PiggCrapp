@@ -58,7 +58,7 @@ object User {
       name: String,
       age: Int,
       weight: Int
-  )
+  ) derives Codec.AsObject
 
   object UserDto {
 
