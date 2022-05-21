@@ -49,7 +49,15 @@ class UsersRoutes[F[_]: JsonDecoder: Monad](
         user <- repository.findUserById(id)
         res <- user.fold(NotFound())(u => {
           // implement update function
-          Created(u)
+          val domainUser = UserDto.toDomain(dto)
+          domainUser.fold(
+            e => UnprocessableEntity(e),
+            x => {
+              val updatedUser =
+                u.copy(userName = x.userName, age = x.age, weight = x.weight)
+              Created(repository.update(updatedUser))
+            }
+          )
         })
       } yield res
 
