@@ -8,6 +8,6 @@ trait Users[F[_]] {
   def findUserById(id: UserId): F[Option[User]]
   def create(user: User): F[User]
   def update(user: User): F[User]
-  def delete(user: User): F[Option[User]]
+  def delete(user: UserId): F[Option[User]]
 }
 
