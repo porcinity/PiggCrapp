@@ -10,14 +10,11 @@ import org.http4s.circe.JsonDecoder
 import org.http4s.circe.*
 import org.http4s.dsl.Http4sDsl
 import io.porcinity.piggcrapp.Domain.User.UserId
+import io.porcinity.piggcrapp.Api.UserIdVar
 
 class UsersRoutes[F[_]: JsonDecoder: Monad](
     repository: Users[F]
 ) extends Http4sDsl[F] {
-
-  object UserIdVar {
-    def unapply(str: String): Option[UserId] = Some(UserId.unsafeFrom(str))
-  }
 
   val routes: HttpRoutes[F] = HttpRoutes.of[F] {
 
@@ -65,7 +62,7 @@ class UsersRoutes[F[_]: JsonDecoder: Monad](
       for {
         d <- repository.delete(id)
         res <- d.fold(NotFound())(_ => NoContent())
-      } yield ???
+      } yield res
   }
 
 }
