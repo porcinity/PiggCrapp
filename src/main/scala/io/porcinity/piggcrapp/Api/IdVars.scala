@@ -15,6 +15,3 @@ object WorkoutIdVar {
 object ExerciseIdVar {
   def unapply(str: String): Option[ExerciseId] = Some(ExerciseId.unsafeFrom(str))
 }
-
-object 
-
