@@ -22,7 +22,8 @@
           buildInputs = with pkgs; [
             jdk
             sbt
-            coursier
+            # coursier
+            metals
           ];
         };
       });
