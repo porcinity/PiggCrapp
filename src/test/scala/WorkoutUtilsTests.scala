@@ -10,7 +10,7 @@ class WorkoutUtilsTests extends AnyWordSpec with Inside {
 
   "A Workout" should {
 
-    "not be created with invalid input" in {
+    "not be created with invalid input." in {
       val variation = "UpperD"
       val workoutDto = WorkoutDto(LocalDate.now, variation)
       val result = WorkoutDto.toDomain(workoutDto, "")
@@ -31,6 +31,6 @@ class WorkoutUtilsTests extends AnyWordSpec with Inside {
         w.variation == WorkoutVariation.UpperC && w.user == userId
       }
     }
-    
+
   }
 }
