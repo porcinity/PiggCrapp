@@ -15,7 +15,7 @@ import Workout.WorkoutId
 
 object Exercise {
 
-  case class Exercise(
+  final case class Exercise(
       exerciseId: ExerciseId,
       exerciseName: ExerciseName,
       // sets: List[Sets],
@@ -38,12 +38,12 @@ object Exercise {
       extends RefinedTypeOps[ExerciseName, String]
       with CatsRefinedTypeOpsSyntax
 
-  final case class ExerciseDto(name: String)
+  final case class CreateExercise(name: String)
 
-  object ExerciseDto {
+  object CreateExercise {
 
     def toDomain(
-        dto: ExerciseDto,
+        dto: CreateExercise,
         workoutId: String
     ): Either[NonEmptyChain[String], Exercise] = {
       val id = NanoIdUtils.randomNanoId
