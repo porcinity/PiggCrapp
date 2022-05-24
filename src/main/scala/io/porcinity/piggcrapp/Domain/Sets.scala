@@ -7,11 +7,17 @@ import eu.timepit.refined.api._
 import eu.timepit.refined.cats.CatsRefinedTypeOpsSyntax
 import eu.timepit.refined.types.numeric.NonNegInt
 import eu.timepit.refined.types.string.NonEmptyFiniteString
+import eu.timepit.refined.numeric.*
+import eu.timepit.refined.generic.*
 import io.circe.Codec
 import io.circe.refined._
 
 import java.time.*
 import eu.timepit.refined.types.numeric.NonNegDouble
+import eu.timepit.refined.numeric.Less
+import eu.timepit.refined.boolean.And
+import eu.timepit.refined.numeric.Interval
+import eu.timepit.refined.boolean.Not
 
 object Sets {
 
@@ -102,13 +108,13 @@ object Sets {
   enum RestPauseRange:
     case Base, Medium, High
 
-  type Weight = NonNegDouble
+  type Weight = Double Refined Interval.Closed[0.0, 1000.0]
 
   object Weight
       extends RefinedTypeOps[Weight, Double]
       with CatsRefinedTypeOpsSyntax
 
-  type Reps = NonNegInt
+  type Reps = Int Refined Interval.Closed[0, 150]
 
   object Reps extends RefinedTypeOps[Reps, Int] with CatsRefinedTypeOpsSyntax
 
