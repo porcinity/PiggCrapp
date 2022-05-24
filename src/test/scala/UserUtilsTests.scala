@@ -1,75 +1,58 @@
-import Domain.*
-
 import java.time.*
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.wordspec.*
+import io.porcinity.piggcrapp.Domain.User.*
 import java.util.UUID
-
-class UserUtilsTests extends AnyWordSpec:
+import cats.data.NonEmptyList
+import org.scalatest.Inside
+class UserUtilsTests extends AnyWordSpec with Inside {
 
   "A UserName" should {
     "Not be created with invalid input." in {
-      assert(UserName("Porcinity$") == Left("Name cannot contain numbers or special characters."))
-      assert(UserName("Po") == Left("Name cannot be fewer than 3 characters."))
-      assert(UserName("PorcinePorcinePorcinePorcinePorcine") == Left("Name cannot be over 30 characters."))
-      assert(UserName("") == Left("Name cannot be empty."))
+      assert(UserName.from("").isLeft)
     }
     "Be created with valid input." in {
-      assert(UserName("Porcinity").isRight)
-      assert(UserName("Pigg").isRight)
+      assert(UserName.from("Porcinity").isRight)
+      assert(UserName.from("Pigg").isRight)
     }
   }
 
   "An Age" should {
     "Not be created with invalid input." in {
-      assert(Age(17) == Left("Age must be greater than 18."))
-      assert(Age(101) == Left("Age cannot be greater than 100."))
+      assert(Age.from(-17).isLeft)
+      assert(Age.from(-101).isLeft)
     }
     "Be created with valid input." in {
-      assert(Age(30).isRight)
-      assert(Age(60).isRight)
+      assert(Age.from(30).isRight)
+      assert(Age.from(60).isRight)
     }
   }
 
   "A UserWeight" should {
     "Not be created with invalid input." in {
-      assert(UserWeight(500) == Left("Weight must be less than 400lbs."))
-      assert(UserWeight(50) == Left("Weight cannot be less than 70lbs."))
+      assert(UserWeight.from(-500).isLeft)
+      assert(UserWeight.from(-50).isLeft)
     }
     "Be created with valid input." in {
-      assert(UserWeight(200).isRight)
-      assert(UserWeight(150).isRight)
+      assert(UserWeight.from(200).isRight)
+      assert(UserWeight.from(150).isRight)
     }
   }
 
   "A User" should {
     "not be created with invalid input." in {
-      val name = UserName("")
-      val age = Age(10)
-      val weight = UserWeight(500)
-
-      val user = for
-        n <- name
-        a <- age
-        w <- weight
-      yield User(n, a, w)
-
-      assert(user.isLeft)
+      val badUser = UserDto("", -3, -10)
+      val result = UserDto.toDomain(badUser)
+      assert(result.isLeft)
+      assert(result.left.map(x => x.head) == Left("Username must be 30 characters or fewer."))
     }
 
     "be created with valid input" in {
-      val name = UserName("Porcinity")
-      val age = Age(50)
-      val weight = UserWeight(200)
-
-      val user = for
-        n <- name
-        a <- age
-        w <- weight
-      yield User(n, a, w)
-
-      assert(user.isRight)
-
+      val goodUser = UserDto("Pigg", 28, 55)
+      val result = UserDto.toDomain(goodUser)
+      assert(result.isRight)
+      inside(result) { case Right(x) => x.age.value == 28 }
+      inside(result) { case Right(u) => u.weight.value == 55 }
     }
   }
-
+}
