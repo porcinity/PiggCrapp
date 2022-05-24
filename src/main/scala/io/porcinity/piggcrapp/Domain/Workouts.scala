@@ -12,7 +12,7 @@ import org.latestbit.circe.adt.codec.JsonTaggedAdt.{PureEncoder, PureDecoder}
 import eu.timepit.refined.types.string.NonEmptyString
 import cats.data.*
 import cats.syntax.all.*
-import User.UserId
+import io.porcinity.piggcrapp.Domain.User.UserId
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 
 object Workout {
@@ -67,6 +67,7 @@ object Workout {
   }
 
   final case class WorkoutDto(date: LocalDate, variation: String)
+      derives Codec.AsObject
 
   object WorkoutDto {
 
