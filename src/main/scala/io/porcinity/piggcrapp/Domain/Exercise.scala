@@ -9,6 +9,7 @@ import eu.timepit.refined.types.numeric.NonNegInt
 import eu.timepit.refined.types.string.NonEmptyFiniteString
 import io.circe.Codec
 import io.circe.refined._
+import io.porcinity.piggcrapp.Domain.Sets.Sets
 
 import java.time.*
 import Workout.WorkoutId
@@ -18,13 +19,30 @@ object Exercise {
   final case class Exercise(
       exerciseId: ExerciseId,
       exerciseName: ExerciseName,
-      // sets: List[Sets],
+      sets: List[Sets],
       workoutId: Workout.WorkoutId
   )
 
-  // extension (exercise: Exercise)
-  //   def addSet(set: Sets): Exercise =
-  //     exercise.copy(sets = exercise.sets :+ set)
+  object Exercise {
+
+    def create(data: ExerciseData, workoutId: WorkoutId) = {
+      val id = NanoIdUtils.randomNanoId
+
+      (
+        ExerciseId.from(id).toEitherNec,
+        ExerciseName
+          .from(data.name)
+          .leftMap(_ => "Exercise name must be 30 characters or fewer.")
+          .toEitherNec,
+        List[Sets]().asRight.toEitherNec,
+        workoutId.asRight.toEitherNec
+      ).parMapN(Exercise.apply)
+    }
+
+    extension (exercise: Exercise)
+      def addSet(set: Sets): Exercise =
+        exercise.copy(sets = exercise.sets :+ set)
+  }
 
   type ExerciseId = NonEmptyFiniteString[21]
 
@@ -38,25 +56,6 @@ object Exercise {
       extends RefinedTypeOps[ExerciseName, String]
       with CatsRefinedTypeOpsSyntax
 
-  final case class CreateExercise(name: String)
-
-  object CreateExercise {
-
-    def toDomain(
-        dto: CreateExercise,
-        workoutId: String
-    ): Either[NonEmptyChain[String], Exercise] = {
-      val id = NanoIdUtils.randomNanoId
-
-      (
-        ExerciseId.from(id).toEitherNec,
-        ExerciseName
-          .from(dto.name)
-          .leftMap(_ => "Exercise name must be 30 characters or fewer.")
-          .toEitherNec,
-        WorkoutId.from(workoutId).toEitherNec
-      ).parMapN(Exercise.apply)
-    }
-  }
+  final case class ExerciseData(name: String)
 
 }
