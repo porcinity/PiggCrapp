@@ -18,6 +18,9 @@ import eu.timepit.refined.numeric.Less
 import eu.timepit.refined.boolean.And
 import eu.timepit.refined.numeric.Interval
 import eu.timepit.refined.boolean.Not
+import io.porcinity.piggcrapp.Domain.Exercise.ExerciseId
+import cats.syntax.all.*
+import io.porcinity.piggcrapp.Domain.Sets.RegularSet
 
 object Sets {
 
@@ -32,7 +35,28 @@ object Sets {
       weight: Weight,
       reps: Reps,
       exercise: Exercise.ExerciseId
-  )
+  ) derives Codec.AsObject
+
+  case class AddRegularSet(weight: Double, reps: Int) derives Codec.AsObject
+
+  object AddRegularSet {
+
+    def toDomain(
+        setDto: AddRegularSet,
+        exerciseId: ExerciseId
+    ): EitherNec[String, RegularSet] = {
+      val id = NanoIdUtils.randomNanoId
+
+      (
+        RegularSetId.from(id).toEitherNec,
+        Weight.from(setDto.weight).toEitherNec,
+        Reps.from(setDto.reps).toEitherNec,
+        exerciseId.asRight.toEitherNec
+      ).parMapN(RegularSet.apply)
+
+    }
+
+  }
 
   case class RestPauseSet(
       restPauseSetId: RestPauseSetId,
@@ -44,13 +68,23 @@ object Sets {
 
   object RestPauseSet {
 
-    def apply(
-        restPauseSetId: RestPauseSetId,
-        range: RestPauseRange,
-        weight: Weight,
-        exerciseId: Exercise.ExerciseId
-    ) =
-      new RestPauseSet(restPauseSetId, range, weight, List[Reps](), exerciseId)
+    // def apply(
+    //     restPauseSetId: RestPauseSetId,
+    //     range: RestPauseRange,
+    //     weight: Weight,
+    //     exerciseId: Exercise.ExerciseId
+    // ) =
+    //   new RestPauseSet(restPauseSetId, range, weight, List[Reps](), exerciseId)
+
+    def create(data: AddRestPauseSet, exerciseId: ExerciseId) = {
+      (
+        RestPauseSetId.from(NanoIdUtils.randomNanoId).toEitherNec,
+        RestPauseRange.fromString(data.range).toEitherNec,
+        Weight.from(data.weight).toEitherNec,
+        List[Reps]().asRight.toEitherNec,
+        exerciseId.asRight.toEitherNec
+      ).parMapN(RestPauseSet.apply)
+    }
 
     extension (rpSet: RestPauseSet) {
       def addReps(reps: Reps): Either[String, RestPauseSet] =
@@ -61,6 +95,9 @@ object Sets {
         }
     }
   }
+
+  case class AddRestPauseSet(range: String, weight: Double)
+      derives Codec.AsObject
 
   case class WidowMakerSet(
       widowMakerSetId: WidowMakerSetId,
@@ -105,8 +142,21 @@ object Sets {
   object Time:
     def apply(time: Double): Time = time
 
-  enum RestPauseRange:
+  enum RestPauseRange {
     case Base, Medium, High
+  }
+
+  object RestPauseRange {
+
+    def fromString(range: String): Either[String, RestPauseRange] =
+      range match {
+        case "Base"   => Base.asRight
+        case "Medium" => Medium.asRight
+        case "High"   => High.asRight
+        case _        => "Invalid range.".asLeft
+      }
+
+  }
 
   type Weight = Double Refined Interval.Closed[0.0, 1000.0]
 
