@@ -2,9 +2,7 @@ import java.time.*
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.wordspec.*
 import io.porcinity.piggcrapp.Domain.User.*
-import java.util.UUID
 import cats.data.NonEmptyList
-import org.scalatest.Inside
 
 class UserUtilsTests extends UnitSpec {
 
@@ -45,7 +43,11 @@ class UserUtilsTests extends UnitSpec {
       val badUser = UserDto("", -3, -10)
       val result = UserDto.toDomain(badUser)
       assert(result.isLeft)
-      assert(result.left.map(x => x.head) == Left("Username must be 30 characters or fewer."))
+      assert(
+        result.left.map(x => x.head) == Left(
+          "Username must be 30 characters or fewer."
+        )
+      )
     }
 
     "be created with valid input" in {
