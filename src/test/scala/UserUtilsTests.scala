@@ -5,7 +5,8 @@ import io.porcinity.piggcrapp.Domain.User.*
 import java.util.UUID
 import cats.data.NonEmptyList
 import org.scalatest.Inside
-class UserUtilsTests extends AnyWordSpec with Inside {
+
+class UserUtilsTests extends UnitSpec {
 
   "A UserName" should {
     "Not be created with invalid input." in {
