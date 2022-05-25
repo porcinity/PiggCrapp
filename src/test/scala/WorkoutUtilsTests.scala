@@ -6,7 +6,7 @@ import java.util.UUID
 import java.time.LocalDate
 import org.scalatest.Inside
 
-class WorkoutUtilsTests extends AnyWordSpec with Inside {
+class WorkoutUtilsTests extends UnitSpec {
 
   "A Workout" should {
 
