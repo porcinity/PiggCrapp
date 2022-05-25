@@ -3,10 +3,15 @@ import org.scalatest.EitherValues
 import io.porcinity.piggcrapp.Domain.Exercise.*
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 import org.scalatest.Inside
+import io.porcinity.piggcrapp.Domain.Workout.WorkoutId
+import io.porcinity.piggcrapp.Domain.Sets.RegularSet
+import io.porcinity.piggcrapp.Domain.Sets.AddRegularSet
+import io.porcinity.piggcrapp.Domain.Sets.Sets.*
 
-class ExerciseUtilsTests extends AnyWordSpec with EitherValues with Inside {
+class ExerciseUtilsTests extends UnitSpec {
 
-  val workoutId = NanoIdUtils.randomNanoId
+  val workoutId = WorkoutId.unsafeFrom(NanoIdUtils.randomNanoId)
+  val exerciseId = ExerciseId.unsafeFrom(NanoIdUtils.randomNanoId)
 
   "An ExerciseName" should {
     "not be created with invalid input" in {
@@ -20,67 +25,52 @@ class ExerciseUtilsTests extends AnyWordSpec with EitherValues with Inside {
   }
 
   "An Exercise" should {
-    "not be created with invalid input" in {
-      val createExercise = CreateExercise("")
 
-      val result = CreateExercise.toDomain(createExercise, workoutId)
-      
+    "not be created with invalid input" in {
+      val createExercise = ExerciseData("")
+
+      val result = Exercise.create(createExercise, workoutId)
+
       assert(result.isLeft)
     }
+
     "should be created with valid input" in {
-      val createDto = CreateExercise("Squat")
-      val result = CreateExercise.toDomain(createDto, workoutId)
+      val createDto = ExerciseData("Squat")
+      val result = Exercise.create(createDto, workoutId)
 
       assert(result.isRight)
-      inside(result) { case Right(exercise) => exercise.exerciseName.value == "Squat" }
+      inside(result) { case Right(exercise) =>
+        exercise.exerciseName.value == "Squat"
+      }
     }
-    // "should add a valid set to list of sets" in {
-    //   val regularSetId = RegularSetId(5)
-    //   val weight = Weight(300)
-    //   val reps = Reps(13)
-    //   val exerciseName = ExerciseName("Squat")
-    //   val workoutId = WorkoutId(UUID.randomUUID())
 
-    //   val exercise =
-    //     for n <- exerciseName
-    //     yield Exercise(n, workoutId)
+    "should add a valid set to list of sets" in {
+      val createDto = ExerciseData("Squat")
+      val exercise = Exercise.create(createDto, workoutId)
+      val regularSet =
+        AddRegularSet.toDomain(AddRegularSet(100.0, 10), exerciseId)
 
-    //   val regularSet = for
-    //     e <- exercise
-    //     w <- weight
-    //     r <- reps
-    //   yield RegularSet(regularSetId, w, r, e.exerciseId)
+      val result = for {
+        e <- exercise
+        set <- regularSet
+      } yield e.addSet(Regular(set))
 
-    //   val result = for
-    //     e <- exercise
-    //     rs <- regularSet
-    //   yield e.addSet(Sets.Regular(rs))
+      assert(result.isRight)
 
-    //   assert(result.value.sets.length == 1)
-    // }
-    // "should not add an invalid set to list of sets" in {
-    //   val regularSetId = RegularSetId(5)
-    //   val weight = Weight(0)
-    //   val reps = Reps(-3)
-    //   val exerciseName = ExerciseName("Squat")
-    //   val workoutId = WorkoutId(UUID.randomUUID())
+    }
 
-    //   val exercise =
-    //     for n <- exerciseName
-    //     yield Exercise(n, workoutId)
+    "should not add an invalid set to list of sets" in {
+      val createDto = ExerciseData("Squat")
+      val exercise = Exercise.create(createDto, workoutId)
+      val regularSet =
+        AddRegularSet.toDomain(AddRegularSet(100000.0, -10), exerciseId)
 
-    //   val regularSet = for
-    //     e <- exercise
-    //     w <- weight
-    //     r <- reps
-    //   yield RegularSet(regularSetId, w, r, e.exerciseId)
+      val result = for {
+        e <- exercise
+        set <- regularSet
+      } yield e.addSet(Regular(set))
 
-    //   val result = for
-    //     e <- exercise
-    //     rs <- regularSet
-    //   yield e.addSet(Sets.Regular(rs))
-
-    //   assert(exercise.isRight && result.isLeft)
-    // }
+      assert(result.isLeft)
+    }
   }
 }
