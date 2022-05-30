@@ -69,6 +69,12 @@ object Workout {
   final case class WorkoutDto(date: LocalDate, variation: String)
       derives Codec.AsObject
 
+  final case class UpdateWorkout(
+      userId: String,
+      date: LocalDate,
+      variation: String
+  ) derives Codec.AsObject
+
   object WorkoutDto {
 
     def toDomain(
