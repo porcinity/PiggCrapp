@@ -19,13 +19,16 @@ object Exercise {
   final case class Exercise(
       exerciseId: ExerciseId,
       exerciseName: ExerciseName,
-      sets: List[Sets],
+      // sets: List[Sets],
       workoutId: Workout.WorkoutId
-  )
+  ) derives Codec.AsObject
 
   object Exercise {
 
-    def create(data: ExerciseData, workoutId: WorkoutId) = {
+    def create(
+        data: ExerciseData,
+        workoutId: WorkoutId
+    ): Either[NonEmptyChain[String], Exercise] = {
       val id = NanoIdUtils.randomNanoId
 
       (
@@ -34,14 +37,14 @@ object Exercise {
           .from(data.name)
           .leftMap(_ => "Exercise name must be 30 characters or fewer.")
           .toEitherNec,
-        List[Sets]().asRight.toEitherNec,
+        // List[Sets]().asRight.toEitherNec,
         workoutId.asRight.toEitherNec
       ).parMapN(Exercise.apply)
     }
 
-    extension (exercise: Exercise)
-      def addSet(set: Sets): Exercise =
-        exercise.copy(sets = exercise.sets :+ set)
+  //   extension (exercise: Exercise)
+  //     def addSet(set: Sets): Exercise =
+  //       exercise.copy(sets = exercise.sets :+ set)
   }
 
   type ExerciseId = NonEmptyFiniteString[21]
@@ -56,6 +59,12 @@ object Exercise {
       extends RefinedTypeOps[ExerciseName, String]
       with CatsRefinedTypeOpsSyntax
 
-  final case class ExerciseData(name: String)
+  final case class ExerciseData(name: String) derives Codec.AsObject
+
+  // object ExerciseData {
+
+  //   def toDomain(data: ExerciseData): Either[NonEmptyChain[String], ExerciseName] 
+    
+  // }
 
 }
