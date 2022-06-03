@@ -34,11 +34,13 @@ class WorkoutRoutes[F[_]: JsonDecoder: Monad](repository: Workouts[F])
         w <- WorkoutDto.toDomain(dto, userId.value).pure[F]
         res <- w.fold(
           e => UnprocessableEntity(e),
-          x => Ok(repository.insertWorkout(userId,x))
+          x => Ok(repository.insertWorkout(userId, x))
         )
       } yield res
 
-    case req @ PUT -> Root / UserIdVar(userId) / "workouts"/ WorkoutIdVar(workoutId) =>
+    case req @ PUT -> Root / UserIdVar(userId) / "workouts" / WorkoutIdVar(
+          workoutId
+        ) =>
       for {
         dto <- req.asJsonDecode[WorkoutDto]
         w <- WorkoutDto.toDomain(dto, userId.value).pure[F]
