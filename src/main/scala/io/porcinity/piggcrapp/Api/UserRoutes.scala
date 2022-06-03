@@ -51,7 +51,11 @@ class UsersRoutes[F[_]: JsonDecoder: Monad](
             e => UnprocessableEntity(e),
             x => {
               val updatedUser =
-                u.copy(userName = x.userName, age = x.age, weight = x.weight)
+                u.copy(
+                  userName = x.userName,
+                  age = x.age,
+                  weight = x.weight
+                )
               Created(repository.update(updatedUser))
             }
           )
